@@ -428,14 +428,14 @@
 </head>
 <body>
 
-<!-- ENTRY OVERLAY: starts the music the moment someone opens the site -->
+<!-- ENTRY OVERLAY: -->
 <div id="entry-overlay">
   <div class="entry-mark">&copy;</div>
   <p>Turn your sound on for the full experience</p>
   <button id="enter-btn">Enter Site</button>
 </div>
 
-<!-- background music: replace the src below with your own audio file -->
+<!-- background music:  -->
 <audio id="bg-music" loop preload="auto">
   <source src="assets/song.mp3" type="audio/mpeg">
 </audio>
@@ -499,7 +499,7 @@
 </footer>
 
 <script>
-  // ---------- PRODUCT DATA (edit freely) ----------
+  // ---------- PRODUCT DATA ----------
   const products = [
     { name:"PRODUCT 1",        category:"tees",        price:"€??", color:"#1c1c1c", tag:"New" },
     { name:"PRODUCT 2",   category:"hoodies",      price:"€??", color:"#e0261c", tag:"New" },
@@ -558,15 +558,12 @@
   });
 
   // ---------- MUSIC TOGGLE ----------
-  // Browsers block audio with sound from autoplaying until the visitor
-  // interacts with the page, so this button is the trigger for that.
   const audio = document.getElementById('bg-music');
   const soundBtn = document.getElementById('sound-toggle');
 
   soundBtn.addEventListener('click', () => {
     if(audio.paused){
       audio.play().catch(() => {
-        alert("Add your song file at assets/song.mp3 for this to play.");
       });
       soundBtn.classList.add('playing');
       soundBtn.setAttribute('aria-pressed','true');
@@ -580,9 +577,6 @@
   });
 
   // ---------- ENTRY OVERLAY ----------
-  // Browsers require a real click before audio with sound can play, so this
-  // "Enter Site" screen doubles as that first interaction — the song starts
-  // the instant someone opens the site and clicks through, not buried later.
   const overlay = document.getElementById('entry-overlay');
   const enterBtn = document.getElementById('enter-btn');
 
@@ -592,7 +586,6 @@
       soundBtn.setAttribute('aria-pressed','true');
       soundBtn.setAttribute('aria-label','Pause music');
     }).catch(() => {
-      alert("Couldn't find assets/song.mp3 — make sure it's uploaded next to index.html.");
     });
     overlay.classList.add('hidden');
   });
