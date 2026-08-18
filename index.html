@@ -1,0 +1,603 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>&copy;ullture</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --black:#0a0a0a;
+    --white:#f6f5f1;
+    --red:#e0261c;
+    --gray:#8c8a84;
+    --line:#d8d6cf;
+    --hero-bg:var(--red);
+    --hero-fg:var(--black);
+  }
+
+  html[data-theme="dark"]{
+    --hero-bg:var(--black);
+    --hero-fg:var(--red);
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+
+  html{scroll-behavior:smooth;}
+
+  body{
+    background:var(--white);
+    color:var(--black);
+    font-family:'Archivo',sans-serif;
+    overflow-x:hidden;
+  }
+
+  ::selection{background:var(--red);color:var(--white);}
+
+  /* ---------- SOUND TOGGLE ---------- */
+  #sound-toggle{
+    position:fixed;
+    bottom:24px;
+    right:24px;
+    z-index:100;
+    width:56px;
+    height:56px;
+    border-radius:50%;
+    background:var(--black);
+    border:2px solid var(--black);
+    color:var(--white);
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:transform .2s ease, background .2s ease;
+  }
+  #sound-toggle:hover{transform:scale(1.08);}
+  #sound-toggle.playing{background:var(--red);border-color:var(--red);}
+  #sound-toggle svg{width:22px;height:22px;}
+  #sound-toggle .bars{display:flex;gap:3px;align-items:flex-end;height:18px;}
+  #sound-toggle .bars span{
+    width:3px;background:var(--white);display:block;
+    animation:eq 0.9s ease-in-out infinite;
+  }
+  #sound-toggle:not(.playing) .bars span{animation-play-state:paused;height:4px !important;}
+  #sound-toggle .bars span:nth-child(1){animation-delay:0s;}
+  #sound-toggle .bars span:nth-child(2){animation-delay:.2s;}
+  #sound-toggle .bars span:nth-child(3){animation-delay:.4s;}
+  @keyframes eq{
+    0%,100%{height:5px;}
+    50%{height:18px;}
+  }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    height:100svh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    position:relative;
+    padding:24px;
+    background:var(--hero-bg);
+    transition:background .35s ease;
+  }
+
+  .hero .eyebrow{
+    font-size:12px;
+    letter-spacing:.35em;
+    text-transform:uppercase;
+    color:var(--hero-fg);
+    opacity:.65;
+    margin-bottom:18px;
+    transition:color .35s ease;
+  }
+
+  .logo{
+    font-family:'Arial Black', Arial, sans-serif;
+    font-size:clamp(70px,16vw,220px);
+    line-height:.85;
+    letter-spacing:-.01em;
+    color:var(--hero-fg);
+    text-transform:uppercase;
+    position:relative;
+    display:inline-block;
+    transition:color .35s ease;
+  }
+
+  .hero .tagline{
+    margin-top:22px;
+    font-size:14px;
+    letter-spacing:.05em;
+    color:var(--hero-fg);
+    max-width:420px;
+    transition:color .35s ease;
+  }
+
+  /* ---------- THEME TOGGLE ---------- */
+  #theme-toggle{
+    position:fixed;
+    bottom:24px;
+    right:96px;
+    z-index:100;
+    height:56px;
+    padding:0 20px;
+    border-radius:28px;
+    background:var(--black);
+    border:2px solid var(--black);
+    color:var(--white);
+    font-family:'Archivo',sans-serif;
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    transition:transform .2s ease;
+  }
+  #theme-toggle:hover{transform:scale(1.05);}
+  #theme-toggle .dot{
+    width:8px;
+    height:8px;
+    border-radius:50%;
+    background:var(--red);
+  }
+  html[data-theme="dark"] #theme-toggle .dot{background:var(--white);}
+
+  .scroll-cue{
+    position:absolute;
+    bottom:36px;
+    left:50%;
+    transform:translateX(-50%);
+    font-size:11px;
+    letter-spacing:.3em;
+    text-transform:uppercase;
+    color:var(--gray);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:10px;
+  }
+  .scroll-cue .stick{
+    width:1px;
+    height:36px;
+    background:var(--gray);
+    position:relative;
+    overflow:hidden;
+  }
+  .scroll-cue .stick::after{
+    content:"";
+    position:absolute;
+    top:-100%;
+    left:0;
+    width:100%;
+    height:100%;
+    background:var(--red);
+    animation:drip 1.8s ease-in-out infinite;
+  }
+  @keyframes drip{
+    0%{top:-100%;}
+    60%{top:100%;}
+    100%{top:100%;}
+  }
+
+  /* ---------- SHOP ---------- */
+  .shop{
+    display:grid;
+    grid-template-columns:220px 1fr;
+    border-top:2px solid var(--black);
+  }
+
+  .rail{
+    padding:64px 28px;
+    border-right:1px solid var(--line);
+    position:sticky;
+    top:0;
+    height:100svh;
+  }
+
+  .rail .rail-title{
+    font-family:'Anton',sans-serif;
+    font-size:22px;
+    text-transform:uppercase;
+    margin-bottom:32px;
+  }
+
+  .rail ul{list-style:none;}
+  .rail li{margin-bottom:18px;}
+  .rail button{
+    background:none;
+    border:none;
+    font-family:'Archivo',sans-serif;
+    font-size:15px;
+    font-weight:600;
+    text-transform:uppercase;
+    letter-spacing:.03em;
+    color:var(--gray);
+    cursor:pointer;
+    padding:0;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    text-align:left;
+  }
+  .rail button::before{
+    content:"";
+    width:6px;
+    height:6px;
+    border-radius:50%;
+    background:transparent;
+    transition:background .15s ease;
+  }
+  .rail button:hover{color:var(--black);}
+  .rail button.active{color:var(--black);}
+  .rail button.active::before{background:var(--red);}
+
+  .grid-section{padding:64px 40px;}
+
+  .grid-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    margin-bottom:36px;
+    border-bottom:2px solid var(--black);
+    padding-bottom:18px;
+  }
+  .grid-header h2{
+    font-family:'Anton',sans-serif;
+    font-size:clamp(32px,4vw,52px);
+    text-transform:uppercase;
+  }
+  .grid-header span{font-size:13px;color:var(--gray);}
+
+  .products{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:36px 28px;
+  }
+
+  .card{
+    cursor:default;
+  }
+  .card .swatch{
+    aspect-ratio:4/5;
+    background:var(--card-color,#111);
+    position:relative;
+    overflow:hidden;
+    margin-bottom:14px;
+  }
+  .card .swatch::after{
+    content:attr(data-tag);
+    position:absolute;
+    top:12px;
+    left:12px;
+    background:var(--red);
+    color:var(--white);
+    font-size:10px;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    padding:5px 9px;
+    font-weight:700;
+  }
+  .card .swatch .mark{
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:'Anton',sans-serif;
+    font-size:15px;
+    letter-spacing:.05em;
+    color:rgba(255,255,255,.5);
+    text-transform:uppercase;
+  }
+  .card h3{
+    font-size:15px;
+    font-weight:700;
+    text-transform:uppercase;
+    margin-bottom:4px;
+  }
+  .card .price{
+    font-size:14px;
+    color:var(--gray);
+  }
+
+  /* ---------- FOOTER ---------- */
+  footer{
+    border-top:2px solid var(--black);
+    padding:70px 40px 40px;
+    background:var(--black);
+    color:var(--white);
+  }
+  .footer-logo{
+    font-family:'Arial Black', Arial, sans-serif;
+    font-size:clamp(40px,8vw,90px);
+    text-transform:uppercase;
+    color:var(--red);
+    margin-bottom:36px;
+  }
+
+  .footer-links{
+    display:flex;
+    flex-wrap:wrap;
+    gap:14px 40px;
+    margin-bottom:50px;
+  }
+  .footer-links a{
+    color:var(--white);
+    text-decoration:none;
+    font-size:15px;
+    font-weight:600;
+    text-transform:uppercase;
+    letter-spacing:.03em;
+    border-bottom:1px solid transparent;
+    transition:border-color .15s ease, color .15s ease;
+  }
+  .footer-links a:hover{color:var(--red);border-color:var(--red);}
+
+  .footer-bottom{
+    display:flex;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:12px;
+    font-size:12px;
+    color:#8c8a84;
+    border-top:1px solid #2a2a2a;
+    padding-top:20px;
+  }
+
+  @media (max-width:760px){
+    .shop{grid-template-columns:1fr;}
+    .rail{
+      position:relative;
+      height:auto;
+      display:flex;
+      flex-direction:column;
+      padding:32px 24px;
+      border-right:none;
+      border-bottom:1px solid var(--line);
+    }
+    .rail ul{display:flex;flex-wrap:wrap;gap:10px 20px;}
+    .rail li{margin-bottom:0;}
+    .products{grid-template-columns:repeat(2,1fr);}
+    .grid-section{padding:40px 20px;}
+    footer{padding:50px 20px 30px;}
+    #sound-toggle{bottom:24px;right:16px;}
+    #theme-toggle{bottom:90px;right:16px;padding:0 16px;height:48px;}
+  }
+
+  /* ---------- ENTRY OVERLAY ---------- */
+  #entry-overlay{
+    position:fixed;
+    inset:0;
+    z-index:200;
+    background:var(--black);
+    color:var(--white);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:28px;
+    text-align:center;
+    padding:24px;
+    transition:opacity .6s ease, visibility .6s ease;
+  }
+  #entry-overlay.hidden{
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+  }
+  #entry-overlay .entry-mark{
+    font-family:'Arial Black', Arial, sans-serif;
+    font-size:clamp(36px,7vw,64px);
+    text-transform:uppercase;
+    color:var(--red);
+  }
+  #entry-overlay p{
+    font-size:12px;
+    letter-spacing:.25em;
+    text-transform:uppercase;
+    color:var(--gray);
+    max-width:320px;
+  }
+  #enter-btn{
+    background:var(--red);
+    color:var(--white);
+    border:2px solid var(--red);
+    font-family:'Archivo',sans-serif;
+    font-size:13px;
+    font-weight:700;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    padding:16px 36px;
+    cursor:pointer;
+    transition:background .2s ease, color .2s ease;
+  }
+  #enter-btn:hover{background:transparent;color:var(--white);}
+
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto;}
+    .scroll-cue .stick::after,#sound-toggle .bars span{animation:none;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ENTRY OVERLAY: starts the music the moment someone opens the site -->
+<div id="entry-overlay">
+  <div class="entry-mark">&copy;</div>
+  <p>Turn your sound on for the full experience</p>
+  <button id="enter-btn">Enter Site</button>
+</div>
+
+<!-- background music: replace the src below with your own audio file -->
+<audio id="bg-music" loop preload="auto">
+  <source src="assets/song.mp3" type="audio/mpeg">
+</audio>
+
+<button id="sound-toggle" aria-label="Play music" aria-pressed="false">
+  <span class="bars"><span></span><span></span><span></span></span>
+</button>
+
+<button id="theme-toggle" aria-label="Switch to dark version">
+  <span class="dot"></span>
+  <span id="theme-label">Dark</span>
+</button>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="eyebrow">Est. 2026 </div>
+  <h1 class="logo">&copy;ullture</h1>
+  <p class="tagline">the streets art, timeless style, our originside.</p>
+  <div class="scroll-cue">
+    <span>Scroll</span>
+    <span class="stick"></span>
+  </div>
+</section>
+
+<!-- SHOP -->
+<section class="shop">
+  <aside class="rail">
+    <div class="rail-title">Shop</div>
+    <ul id="filter-list">
+      <li><button class="active" data-filter="all">All</button></li>
+      <li><button data-filter="tees">Tees</button></li>
+      <li><button data-filter="hoodies">Hoodies</button></li>
+      <li><button data-filter="outerwear">Outerwear</button></li>
+      <li><button data-filter="bottoms">Bottoms</button></li>
+      <li><button data-filter="accessories">Accessories</button></li>
+    </ul>
+  </aside>
+
+  <div class="grid-section">
+    <div class="grid-header">
+      <h2>New Drop</h2>
+      <span id="count-label">6 items</span>
+    </div>
+    <div class="products" id="product-grid">
+      <!-- product cards injected by JS -->
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">&copy;</div>
+  <div class="footer-links">
+    <a href="https://instagram.com/culltureofficial" target="_blank" rel="noopener">Instagram</a>
+    <a href="mailto:hello@cullture.com">hello@cullture.com</a>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2026 Cullture. All for The A.U.G. All rights reserved.</span>
+    <span>All of The A.U.G.</span>
+  </div>
+</footer>
+
+<script>
+  // ---------- PRODUCT DATA (edit freely) ----------
+  const products = [
+    { name:"PRODUCT 1",        category:"tees",        price:"€??", color:"#1c1c1c", tag:"New" },
+    { name:"PRODUCT 2",   category:"hoodies",      price:"€??", color:"#e0261c", tag:"New" },
+    { name:"PRODUCT 3",    category:"outerwear",    price:"€??", color:"#3a3a38", tag:"" },
+    { name:"PRODUCT 4",      category:"bottoms",      price:"€??", color:"#5c5a52", tag:"" },
+    { name:"PRODUCT 5",       category:"accessories",  price:"€??", color:"#0a0a0a", tag:"" },
+    { name:"PRODUCT 6", category:"tees",       price:"€??", color:"#8c8a84", tag:"" },
+  ];
+
+  const grid = document.getElementById('product-grid');
+  const countLabel = document.getElementById('count-label');
+
+  function render(filter){
+    grid.innerHTML = "";
+    const items = filter === "all" ? products : products.filter(p => p.category === filter);
+    items.forEach(p => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `
+        <div class="swatch" style="--card-color:${p.color}" data-tag="${p.tag}">
+          <div class="mark">&copy;ullture</div>
+        </div>
+        <h3>${p.name}</h3>
+        <div class="price">${p.price}</div>
+      `;
+      grid.appendChild(card);
+    });
+    countLabel.textContent = `${items.length} item${items.length === 1 ? '' : 's'}`;
+  }
+  render('all');
+
+  document.getElementById('filter-list').addEventListener('click', e => {
+    const btn = e.target.closest('button');
+    if(!btn) return;
+    document.querySelectorAll('#filter-list button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    render(btn.dataset.filter);
+  });
+
+  // ---------- THEME TOGGLE (bright / dark hero) ----------
+  const themeBtn = document.getElementById('theme-toggle');
+  const themeLabel = document.getElementById('theme-label');
+  const root = document.documentElement;
+
+  themeBtn.addEventListener('click', () => {
+    const isDark = root.getAttribute('data-theme') === 'dark';
+    if(isDark){
+      root.removeAttribute('data-theme');
+      themeLabel.textContent = 'Dark';
+      themeBtn.setAttribute('aria-label','Switch to dark version');
+    } else {
+      root.setAttribute('data-theme','dark');
+      themeLabel.textContent = 'Bright';
+      themeBtn.setAttribute('aria-label','Switch to bright version');
+    }
+  });
+
+  // ---------- MUSIC TOGGLE ----------
+  // Browsers block audio with sound from autoplaying until the visitor
+  // interacts with the page, so this button is the trigger for that.
+  const audio = document.getElementById('bg-music');
+  const soundBtn = document.getElementById('sound-toggle');
+
+  soundBtn.addEventListener('click', () => {
+    if(audio.paused){
+      audio.play().catch(() => {
+        alert("Add your song file at assets/song.mp3 for this to play.");
+      });
+      soundBtn.classList.add('playing');
+      soundBtn.setAttribute('aria-pressed','true');
+      soundBtn.setAttribute('aria-label','Pause music');
+    } else {
+      audio.pause();
+      soundBtn.classList.remove('playing');
+      soundBtn.setAttribute('aria-pressed','false');
+      soundBtn.setAttribute('aria-label','Play music');
+    }
+  });
+
+  // ---------- ENTRY OVERLAY ----------
+  // Browsers require a real click before audio with sound can play, so this
+  // "Enter Site" screen doubles as that first interaction — the song starts
+  // the instant someone opens the site and clicks through, not buried later.
+  const overlay = document.getElementById('entry-overlay');
+  const enterBtn = document.getElementById('enter-btn');
+
+  enterBtn.addEventListener('click', () => {
+    audio.play().then(() => {
+      soundBtn.classList.add('playing');
+      soundBtn.setAttribute('aria-pressed','true');
+      soundBtn.setAttribute('aria-label','Pause music');
+    }).catch(() => {
+      alert("Couldn't find assets/song.mp3 — make sure it's uploaded next to index.html.");
+    });
+    overlay.classList.add('hidden');
+  });
+
+</script>
+
+</body>
+</html>
